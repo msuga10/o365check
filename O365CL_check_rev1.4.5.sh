@@ -106,6 +106,9 @@ fi
 if [[ ! -e /a10data/guest/${conf_dir} ]]; then
   mkdir /a10data/guest/${conf_dir}
 fi
+if [[ ! -e /a10data/guest/tmp ]]; then
+  mkdir /a10data/guest/tmp
+fi
                                                                                #
 ########  Directory check  #####################################################
 
