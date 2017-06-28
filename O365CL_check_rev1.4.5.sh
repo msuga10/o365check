@@ -88,7 +88,7 @@ echo $NOW
 if [ $NOW -ge $MIN -a $NOW -lt $MAX ]; then
 	date '+%Y_%m%d_%H%M'
         echo "script is starting"
-		/a10/bin/axlog -m 2 -p 6 O365CL_check_started
+	/a10/bin/axlog -m 2 -p 6 O365CL_check_started
 else
 	date '+%Y_%m%d_%H%M'
         echo "out of time slot"
@@ -123,7 +123,8 @@ export https_proxy=$proxy_address
 if [[ `wget -nv --spider --timeout 60 -t 5 -O /a10data/guest/$xml_file $url_xml 2>&1 | grep '200 OK' -c` = "0" ]]; then
   ######## if failed, save the result of HTTP GET
   curl -k -v $url_xml
-else
+  /a10/bin/axlog -m 2 -p 6 o365 xml GET fail
+  else
   ######## if 200OK, Get o365 xml file
   wget -O /a10data/guest/$xml_file $url_xml
   export https_proxy=
