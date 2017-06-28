@@ -257,6 +257,8 @@ else
     grep '\.\*$' | \
     sed -E 's/^(.*)(\.\*)$/\1/g' | \
     sed -E "s/^/contains /g" | \
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
 #    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
 #    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
 #    grep '\.\*$' | \
@@ -272,6 +274,8 @@ else
     sed -E 's/(\*)//g' | \
     sed -E 's/(\s)//g' | \
     sed -E "s/^/ends-with /g" | \
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
 #    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
 #    grep -v '\.\*$' | \
 #    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
@@ -325,6 +329,8 @@ if [[ $result_code -ne 1 ]]; then
     grep '\.\*$' | \
     sed -E 's/^(.*)(\.\*)$/\1/g' | \
     sed -E "s/^/contains /g" | \
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
 #    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
 #    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
 #    grep '\.\*$' | \
@@ -340,6 +346,8 @@ if [[ $result_code -ne 1 ]]; then
     sed -E 's/(\*)//g' | \
     sed -E 's/(\s)//g' | \
     sed -E "s/^/ends-with /g" | \
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
 #    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
 #    grep -v '\.\*$' | \
 #    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
