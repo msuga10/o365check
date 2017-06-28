@@ -138,7 +138,9 @@ else
     grep '\.\*$' | \
     sed -E 's/^(.*)(\.\*)$/\1/g' | \
     sed -E "s/^/${match_options} /g" | \
-    tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
+　　tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
   echo 'cat products/product[@name="o365"]/addresslist[@type="URL"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
@@ -148,6 +150,8 @@ else
     sed -E 's/(\*)//g' | \
     sed -E 's/(\s)//g' | \
     sed -E "s/^/${match_options} /g" | \
+    sed 's/\(\/\).*/\1/' | \
+    sed 's/\///g' | \
     tr A-Z a-z |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
   sed -i -E "1i class-list $class_list_name_o365 ac file" /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
     ######## copy and rename a new archive classlist to upload
