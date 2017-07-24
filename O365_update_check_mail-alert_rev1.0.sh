@@ -259,6 +259,11 @@ else
     sed -E "s/^/contains /g" | \
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
+#    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
+#    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
+#    grep '\.\*$' | \
+#    sed -E 's/^(.*)(\.\*)$/\1/g' | \
+#    sed -E 's/^/contains /g' | \
     tr A-Z a-z |sort |uniq >> ./${archive_dir}/${archive_cl_all}.txt
   echo 'cat products/product/addresslist[@type="URL"]/address' | \
     xmllint --shell ./${archive_dir}/${archive_cl_all}.xml | grep "<address>" | \
@@ -271,6 +276,12 @@ else
     sed -E "s/^/ends-with /g" | \
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
+#    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
+#    grep -v '\.\*$' | \
+#    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
+#    sed -E 's/(\*)//g' | \
+#    sed -E 's/(\s)//g' | \
+#    sed -E 's/^/ends-with /g' | \
     tr A-Z a-z |sort |uniq >> ./${archive_dir}/${archive_cl_all}.txt
   sed -i -E "1i class-list $class_list_name_all ac file" ./${archive_dir}/${archive_cl_all}.txt
   ######## Check if class-list is empty or not
@@ -320,6 +331,11 @@ if [[ $result_code -ne 1 ]]; then
     sed -E "s/^/contains /g" | \
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
+#    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
+#    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
+#    grep '\.\*$' | \
+#    sed -E 's/^(.*)(\.\*)$/\1/g' | \
+#    sed -E 's/^/contains /g' | \
     tr A-Z a-z |sort |uniq >> ./${archive_dir}/${archive_cl_crl}.txt
   echo 'cat products/product[@name="CRLs"]/addresslist[@type="URL"]/address' | \
     xmllint --shell ./${archive_dir}/${archive_cl_all}.xml | grep "<address>" | \
@@ -332,6 +348,12 @@ if [[ $result_code -ne 1 ]]; then
     sed -E "s/^/ends-with /g" | \
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
+#    sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
+#    grep -v '\.\*$' | \
+#    sed -E 's/^(.*\*\.|)(.*)$/\2/g' | \
+#    sed -E 's/(\*)//g' | \
+#    sed -E 's/(\s)//g' | \
+#    sed -E 's/^/ends-with /g' | \
     tr A-Z a-z |sort |uniq >> ./${archive_dir}/${archive_cl_crl}.txt
     sed -i -E "1i class-list $class_list_name_crl ac file" ./${archive_dir}/${archive_cl_crl}.txt
     ######## copy a last-uploaded file for diff
@@ -437,6 +459,23 @@ if [[ $result_code -ne 1 ]]; then
       ######## result: same file. no upload done
       result_code_ipv4=2
     else
+#      ######## aXAPI: Log in Thunder
+#      result=`curl -H "Accept-Encoding: identity" \
+#        -H "Content-Length: 57" -H "Content-type: application/json" \
+#        -d "{\"credentials\": {\"username\": \"admin\", \"password\": \"a10\"}}" \
+#        -k -s -X POST https://${thunder_ip}/axapi/v3/auth`
+#      auth_token=`echo $result | sed -E 's/^.*\"signature\":\"([0-9a-z]*)\".*$/\1/g'`
+#      ######## aXAPI: Import class-list
+#      echo "{\"class-list\":{\"action\":\"import\",\"file\":\"${class_list_name_all_ipv4}\",\"file-handle\":\"${class_list_name_all_ipv4}\"}}" > ./${conf_dir}/o365_all_ipv4.json
+#      curl -X POST -H "Accept-Encoding: identity" -H "Authorization: A10 ${auth_token}" \
+#       -F json=@./${conf_dir}/o365_all_ipv4.json -F file=@${class_list_name_all_ipv4} \
+#       -k -vv https://${thunder_ip}/axapi/v3/file/class-list
+#      ######## aXAPI: Log Off
+#      curl -H "Accept-Encoding: identity" \
+#       -H "Content-type: application/json" \
+#       -H "Authorization: A10 ${auth_token}" \
+#       -k -s \
+#       https://${thunder_ip}/axapi/v3/logoff > /dev/null
       ######## Save the result of diff command
       echo "diff ${class_list_name_all_ipv4}_last-uploaded $class_list_name_all_ipv4" >> ./${diff_dir}/${diff_result_all_ipv4}
       diff ${class_list_name_all_ipv4}_last-uploaded $class_list_name_all_ipv4 >> ./${diff_dir}/${diff_result_all_ipv4}
@@ -489,6 +528,23 @@ if [[ $result_code -ne 1 ]]; then
       ######## result: same file. no upload done
       result_code_ipv6=2
     else
+#      ######## aXAPI: Log in Thunder
+#      result=`curl -H "Accept-Encoding: identity" \
+#        -H "Content-Length: 57" -H "Content-type: application/json" \
+#        -d "{\"credentials\": {\"username\": \"admin\", \"password\": \"a10\"}}" \
+#        -k -s -X POST https://${thunder_ip}/axapi/v3/auth`
+#      auth_token=`echo $result | sed -E 's/^.*\"signature\":\"([0-9a-z]*)\".*$/\1/g'`
+#      ######## aXAPI: Import class-list
+#      echo "{\"class-list\":{\"action\":\"import\",\"file\":\"${class_list_name_all_ipv6}\",\"file-handle\":\"${class_list_name_all_ipv6}\"}}" > ./${conf_dir}/o365_all_ipv6.json
+#      curl -X POST -H "Accept-Encoding: identity" -H "Authorization: A10 ${auth_token}" \
+#       -F json=@./${conf_dir}/o365_all_ipv6.json -F file=@${class_list_name_all_ipv6} \
+#       -k -vv https://${thunder_ip}/axapi/v3/file/class-list
+#      ######## aXAPI: Log Off
+#      curl -H "Accept-Encoding: identity" \
+#       -H "Content-type: application/json" \
+#       -H "Authorization: A10 ${auth_token}" \
+#       -k -s \
+#       https://${thunder_ip}/axapi/v3/logoff > /dev/null
       ######## Save the result of diff command
       echo "diff ${class_list_name_all_ipv6}_last-uploaded $class_list_name_all_ipv6" >> ./${diff_dir}/${diff_result_all_ipv6}
       diff ${class_list_name_all_ipv6}_last-uploaded $class_list_name_all_ipv6 >> ./${diff_dir}/${diff_result_all_ipv6}
@@ -621,6 +677,7 @@ if [[ $result_code_validchk -eq 1 ]]; then
   echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
   echo "Content-Disposition: attachment; filename="nocrl_invalid.txt"" >>  $tmp_attachment
   echo '' >> $tmp_attachment
+#  cat nocrl_invalid.txt >> $tmp_attachment 
   cat $tmp_base64 >> $tmp_attachment
   echo '' >> $tmp_attachment
 # if URL does not have invalid characters  ###############################

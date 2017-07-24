@@ -1,0 +1,240 @@
+########  Send e-mail ##########################################################
+                                                                               #
+                                                                               #
+                                                                               #
+
+######## Create mail title and message for all URLs ############################
+                                                                               #
+                                                                               #
+# variable for line break code for base64
+CR=$(printf '\r')  
+# temp file for attachments
+tmp_base64=$(mktemp)
+tmp_attachment=$(mktemp)
+# if failed to get XML file ####################################################
+if [[ $result_code_xml -eq 1 ]]; then
+  mail_subject="O365 class-list | all URLs/IPv4/IPv6 failure | "
+  mail_message="$mail_message$mail_all_url_message$mail_1"
+  # create an attachment of curl debug file in base64 format
+  cat ./${err_dir}/${err_curl_xml_log} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+  # create SMTP headers
+  echo "--$_DATE_TIME"   > $tmp_attachment
+  echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+  echo "Content-Type: application/octet-stream; name="${err_curl_xml_log}"" >> $tmp_attachment
+  echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+  echo "Content-Disposition: attachment; filename="${err_curl_xml_log}"" >>  $tmp_attachment
+  echo '' >> $tmp_attachment
+  cat $tmp_base64 >> $tmp_attachment
+  echo '' >> $tmp_attachment
+# if class-list for all URLs file is not updated ###############################
+elif [[ $result_code_clurl -eq 1 ]]; then
+  mail_subject="O365 class-list | all URLs NO update | "
+  mail_message="$mail_message$mail_all_url_message$mail_2"
+# if class-list for all URLs file is updated (there is difference between ######
+# newly uploaded file and last-uploaded file) ##################################
+elif [[ $result_code_clurl -eq 0 ]]; then
+  mail_subject="O365 class-list | all URLs UPDATED | "
+  mail_message="$mail_message$mail_all_url_message$mail_3"
+  # create attachment of diff file in base64 format
+  cat ./${diff_dir}/${diff_result_all} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+  # create SMTP headers
+  echo "--$_DATE_TIME"   >> $tmp_attachment
+  echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+  echo "Content-Type: application/octet-stream; name="${diff_result_all}"" >> $tmp_attachment
+  echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+  echo "Content-Disposition: attachment; filename="${diff_result_all}"" >>  $tmp_attachment
+  echo '' >> $tmp_attachment
+  cat $tmp_base64 >> $tmp_attachment
+  echo '' >> $tmp_attachment
+  # create attachment of class-list file in base64 format
+  cat ${class_list_name_all} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+  # create SMTP headers
+  echo "--$_DATE_TIME"   >> $tmp_attachment
+  echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+  echo "Content-Type: application/octet-stream; name="${class_list_name_all}.txt"" >> $tmp_attachment
+  echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+  echo "Content-Disposition: attachment; filename="${class_list_name_all}.txt"" >>  $tmp_attachment
+  echo '' >> $tmp_attachment
+  cat $tmp_base64 >> $tmp_attachment
+  echo '' >> $tmp_attachment
+# if creating class-list for all URLs is failed ################################
+#elif [[ $result_code -eq 4 ]]; then
+#  mail_subject="O365 class-list | all URLs upload Canceled | "
+#  mail_message="$mail_message$mail_all_url_message$mail_4"
+#  # create attachment of class-list file in base64 format
+#  cat ./${archive_dir}/${archive_cl_all}.txt | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+  # create SMTP headers
+#  echo "--$_DATE_TIME"   >> $tmp_attachment
+#  echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+#  echo "Content-Type: application/octet-stream; name="${archive_cl_all}.txt"" >> $tmp_attachment
+#  echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+#  echo "Content-Disposition: attachment; filename="${archive_cl_all}.txt"" >>  $tmp_attachment
+#  echo '' >> $tmp_attachment
+#  cat $tmp_base64 >> $tmp_attachment
+#  echo '' >> $tmp_attachment
+#else #result_code=0
+#  echo "ERROR!"
+#  exit 1
+#fi
+
+######## Create mail title and message for IPv4 ################################
+                                                                               #
+                                                                               #
+if [[ "$get_ipv4"="yes" ]]; then
+  # if no update 
+  if [[ $result_code_clipv4  -eq 1 ]]; then
+    mail_subject=$mail_subject"IPv4 NO update | "
+    mail_message="$mail_message$mail_ipv4_message$mail_ipv4_2"
+  # if HTML file is updated (there is difference between newly uploaded file and last-uploaded file)
+  elif [[ $result_code_clipv4  -eq 0 ]]; then
+    mail_subject=$mail_subject"IPv4 UPDATED | "
+    mail_message="$mail_message$mail_ipv4_message$mail_ipv4_3"
+    # create attachment of diff file in base64 format
+    cat ./${diff_dir}/${diff_result_all_ipv4} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${diff_result_all_ipv4}"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${diff_result_all_ipv4}"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+    # create attachment of class-list file in base64 format
+    cat ${class_list_name_all_ipv4} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${class_list_name_all_ipv4}.txt"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${class_list_name_all_ipv4}.txt"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+#  elif [[ $result_code_ipv4  -eq 4 ]]; then
+#    mail_subject=$mail_subject"IPv4 upload Canceled | "
+#    mail_message="$mail_message$mail_ipv4_message$mail_ipv4_4"
+    # create attachment of class-list file in base64 format
+    cat ./${archive_dir}/${archive_cl_all_ipv4}.txt | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${archive_cl_all_ipv4}.txt"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${archive_cl_all_ipv4}.txt"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+  else #result_code=0
+    echo "ERROR!"
+  fi
+fi
+
+######## Create mail title and message for IPv6 ################################
+                                                                               #
+                                                                               #
+if [[ "$get_ipv6"="yes" ]]; then
+  # if no update 
+  if [[ $result_code_clipv6  -eq 1 ]]; then
+    mail_subject=$mail_subject"IPv6 NO update | "
+    mail_message="$mail_message$mail_ipv6_message$mail_ipv6_2"
+  # if HTML file is updated (there is difference between newly uploaded file and last-uploaded file)
+  elif [[ $result_code_clipv6  -eq 0 ]]; then
+    mail_subject=$mail_subject"IPv6 UPDATED | "
+    mail_message="$mail_message$mail_ipv6_message$mail_ipv6_3"
+    # create attachment of diff file in base64 format
+    cat ./${diff_dir}/${diff_result_all_ipv6} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${diff_result_all_ipv6}"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${diff_result_all_ipv6}"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+    # create attachment of class-list file in base64 format
+    cat ${class_list_name_all_ipv6} | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${class_list_name_all_ipv6}.txt"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${class_list_name_all_ipv6}.txt"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+#  elif [[ $result_code_ipv6  -eq 4 ]]; then
+#    mail_subject=$mail_subject"IPv6 upload Canceled | "
+#    mail_message="$mail_message$mail_ipv6_message$mail_ipv6_4"
+    # create attachment of class-list file in base64 format
+    cat ./${archive_dir}/${archive_cl_all_ipv6}.txt | sed "/^\$/s/\$/$CR/" | sed "/[^$CR]\$/s/\$/$CR/" | base64 > $tmp_base64
+    # create SMTP headers
+    echo "--$_DATE_TIME"   >> $tmp_attachment
+    echo 'MIME-Version: 1.0'   >>  $tmp_attachment
+    echo "Content-Type: application/octet-stream; name="${archive_cl_all_ipv6}.txt"" >> $tmp_attachment
+    echo 'Content-Transfer-Encoding: base64'  >>  $tmp_attachment
+    echo "Content-Disposition: attachment; filename="${archive_cl_all_ipv6}.txt"" >>  $tmp_attachment
+    echo '' >> $tmp_attachment
+    cat $tmp_base64 >> $tmp_attachment
+    echo '' >> $tmp_attachment
+  else #result_code=0
+    echo "ERROR!"
+  fi
+fi
+
+### check last modified for XML
+#if [[ $result_code -ne 1 ]]; then
+#  # No update
+#  if [[ $result_code_xml -eq 2 ]]; then
+#    mail_message="$mail_message$mail_xml_last_modified_message\n$mail_last2$last_modified_xml"
+  # Updated
+#  elif [[ $result_code_xml -eq 3 ]]; then
+#    mail_message="$mail_message$mail_xml_last_modified_message\n$mail_last3$last_modified_xml\n$url_xml"
+#  fi
+#fi
+
+#### Add Thunder IP in the end of email subject
+mail_subject=$mail_subject"Thunder: $thunder_ip"
+#### Add boundary in the end of body
+echo "--$_DATE_TIME--" >> $tmp_attachment
+######## Send email ########
+
+tmp_head_msg=$(mktemp)
+# header
+echo "From: '$mail_from_name' <$mail_from_ad>" > $tmp_head_msg
+echo "To: $mail_to" >> $tmp_head_msg
+echo "Subject: $mail_subject" >> $tmp_head_msg
+echo 'MIME-Version: 1.0' >>  $tmp_head_msg
+echo 'Content-Transfer-Encoding: 7bit' >> $tmp_head_msg
+echo "Content-Type: multipart/mixed; boundary="$_DATE_TIME"" >> $tmp_head_msg
+echo '' >> $tmp_head_msg
+
+# BODY message
+echo "--$_DATE_TIME"   >>  $tmp_head_msg
+echo 'Content-Transfer-Encoding: base64' >> $tmp_head_msg
+echo 'Content-Type: text/plain; charset="UTF-8"' >> $tmp_head_msg
+echo '' >> $tmp_head_msg
+tmp_msg1=$(mktemp)
+tmp_msg2=$(mktemp)
+echo $mail_message > $tmp_msg1
+LF=$(printf '\\\012_')
+LF=${LF%_}
+cat $tmp_msg1 | sed 's/\\n/'"$LF"'/g' | base64 > $tmp_msg2
+cat $tmp_msg2 >> $tmp_head_msg
+echo ''  >> $tmp_head_msg
+
+cat $tmp_attachment >> $tmp_head_msg
+cat $tmp_head_msg | sendmail -t
+
+cat $tmp_head_msg
+cat $tmp_attachment
+
+rm -f $tmp_base64
+rm -f $tmp_attachment
+rm -f $tmp_msg1
+rm -f $tmp_msg2
+                                                                               #
+                                                                               #
+                                                                               #
+########  Send e-mail ##########################################################
