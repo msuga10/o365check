@@ -88,12 +88,12 @@ NOW=`expr $date2 % 86400`
 echo $NOW
 
 if [ $NOW -ge $MIN -a $NOW -lt $MAX ]; then
-	date '+%Y_%m%d_%H%M'
+        date '+%Y_%m%d_%H%M'
         echo "script is starting"
-	/a10/bin/axlog -m 2 -p 6 O365CL_check_started
+        /a10/bin/axlog -m 2 -p 6 O365CL_check_started
 else
-	date '+%Y_%m%d_%H%M'
-        echo "out of time slot"
+        date '+%Y_%m%d_%H%M'
+	echo "out of time slot"
         exit
 fi
 
@@ -143,8 +143,8 @@ if [[ `wget -nv --spider --timeout 60 -t 5 -O /a10data/guest/$xml_file $url_xml 
     sed -E "s/^/${match_options} /g" | \
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
-　　tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
-  echo 'cat products/product[@name="o365"]/addresslist[@type="URL"]/address' | \
+    tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
+    echo 'cat products/product[@name="o365"]/addresslist[@type="URL"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
     sed -E "s/^http.*:\/\///" | \
@@ -156,7 +156,7 @@ if [[ `wget -nv --spider --timeout 60 -t 5 -O /a10data/guest/$xml_file $url_xml 
     sed 's/\(\/\).*/\1/' | \
     sed 's/\///g' | \
     tr A-Z a-z |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
-  sed -i -E "1i class-list $class_list_name_o365 ac file" /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
+    sed -i -E "1i class-list $class_list_name_o365 ac file" /a10data/guest/${archive_dir}/${archive_cl_o365}.txt
     ######## copy and rename a new archive classlist to upload
     cp -f /a10data/guest/${archive_dir}/${archive_cl_o365}.txt /a10data/guest/$class_list_name_o365
     ######## check difference between downloaded file and current class-list file
@@ -210,12 +210,12 @@ if [[ $result_code -ne 1 ]]; then
   echo 'cat products/product[@name="o365"]/addresslist[@type="IPv4"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml  | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep "/"  >> /a10data/guest${tmpfile1}
-  echo 'cat products/product[@name="o365"]/addresslist[@type="IPv4"]/address' | \
+    echo 'cat products/product[@name="o365"]/addresslist[@type="IPv4"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep -v "/" | \
     sed -E 's/$/\/32/g' >> /a10data/guest${tmpfile1}
-  cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365_ipv4}.txt
-  sed -i -E "1i class-list $class_list_name_o365_ipv4 ipv4 file" /a10data/guest/${archive_dir}/${archive_cl_o365_ipv4}.txt
+    cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365_ipv4}.txt
+    sed -i -E "1i class-list $class_list_name_o365_ipv4 ipv4 file" /a10data/guest/${archive_dir}/${archive_cl_o365_ipv4}.txt
   rm -f /a10data/guest$tmpfile1
     ######## copy and rename a new archive classlist to upload
     cp -f /a10data/guest/${archive_dir}/${archive_cl_o365_ipv4}.txt /a10data/guest/$class_list_name_o365_ipv4
@@ -269,12 +269,12 @@ if [[ $result_code -ne 1 ]]; then
   echo 'cat products/product[@name="o365"]/addresslist[@type="IPv6"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml  | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep "/"  >> /a10data/guest${tmpfile1}
-  echo 'cat products/product[@name="o365"]/addresslist[@type="IPv6"]/address' | \
+    echo 'cat products/product[@name="o365"]/addresslist[@type="IPv6"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep -v "/" | \
     sed -E 's/$/\/128/g' >> /a10data/guest${tmpfile1}
-  cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365_ipv6}.txt
-  sed -i -E "1i class-list $class_list_name_o365_ipv6 ipv6 file" /a10data/guest/${archive_dir}/${archive_cl_o365_ipv6}.txt
+    cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_o365_ipv6}.txt
+    sed -i -E "1i class-list $class_list_name_o365_ipv6 ipv6 file" /a10data/guest/${archive_dir}/${archive_cl_o365_ipv6}.txt
   rm -f /a10data/guest$tmpfile1
     ######## copy and rename a new archive classlist to upload
     cp -f /a10data/guest/${archive_dir}/${archive_cl_o365_ipv6}.txt /a10data/guest/$class_list_name_o365_ipv6
@@ -331,12 +331,12 @@ if [[ $result_code -ne 1 ]]; then
   echo 'cat products/product[@name="LYO"]/addresslist[@type="IPv4"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml  | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep "/"  >> /a10data/guest${tmpfile1}
-  echo 'cat products/product[@name="LYO"]/addresslist[@type="IPv4"]/address' | \
+    echo 'cat products/product[@name="LYO"]/addresslist[@type="IPv4"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | grep -v "/" | \
     sed -E 's/$/\/32/g' >> /a10data/guest${tmpfile1}
-  cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_skype_ipv4}.txt
-  sed -i -E "1i class-list $class_list_name_skype_ipv4 ipv4 file" /a10data/guest/${archive_dir}/${archive_cl_skype_ipv4}.txt
+    cat /a10data/guest$tmpfile1 |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_skype_ipv4}.txt
+    sed -i -E "1i class-list $class_list_name_skype_ipv4 ipv4 file" /a10data/guest/${archive_dir}/${archive_cl_skype_ipv4}.txt
   rm -f /a10data/guest$tmpfile1
     ######## copy and rename a new archive classlist to upload
     cp -f /a10data/guest/${archive_dir}/${archive_cl_skype_ipv4}.txt /a10data/guest/$class_list_name_skype_ipv4
@@ -458,8 +458,8 @@ if [[ $result_code -ne 1 ]]; then
     grep '\.\*$' | \
     sed -E 's/^(.*)(\.\*)$/\1/g' | \
     sed -E "s/^/${match_options} /g" | \
-　　tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt
-  echo 'cat products/product[@name="LYO"]/addresslist[@type="URL"]/address' | \
+    tr A-Z a-z |sort |uniq >> /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt
+    echo 'cat products/product[@name="LYO"]/addresslist[@type="URL"]/address' | \
     xmllint --shell /a10data/guest/${archive_dir}/${archive_cl_o365}.xml  | grep "<address>" | \
     sed -E 's/^.*(<address>(.*)<\/address>)$/\2/g' | \
     sed -E "s/^http.*:\/\///" | \
@@ -469,7 +469,7 @@ if [[ $result_code -ne 1 ]]; then
     sed -E 's/(\s)//g' | \
     sed -E "s/^/${match_options} /g" | \
     tr A-Z a-z |sort |uniq > /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt
-  sed -i -E "1i class-list $class_list_name_skype_url ac file" /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt
+    sed -i -E "1i class-list $class_list_name_skype_url ac file" /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt
 
     ######## copy and rename a new archive classlist to upload
     cp -f /a10data/guest/${archive_dir}/${archive_cl_skype_url}.txt /a10data/guest/${class_list_name_skype_url}
